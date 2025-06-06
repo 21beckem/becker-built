@@ -21,23 +21,13 @@ TOOLBOX.contents.push({
 // ---- Fetch Block ----
 CUSTOM_BLOCKS.push({
     "type": "fetch_url",
-    "colour": 60,
     "tooltip": "Fetches data from a URL. The \"On Return\" section will run asynchronously!",
     "helpUrl": "",
-    "message0": "Fetch   . %1 Is JSON? %2 %3 .   url %4 On Return %5 %6",
+    "message0": "Fetch %1 url %2 On Return %3 %4",
     "args0": [
         {
             "type": "input_dummy",
-            "name": "NAME"
-        },
-        {
-            "type": "field_checkbox",
-            "name": "isJsonOrNo",
-            "checked": "FALSE"
-        },
-        {
-            "type": "input_dummy",
-            "name": "toJsonOrNo"
+            "name": "dummy1"
         },
         {
             "type": "input_value",
@@ -46,30 +36,29 @@ CUSTOM_BLOCKS.push({
         },
         {
             "type": "field_variable",
-            "name": "returnTxtOrJson",
+            "name": "returnedData",
             "variable": "data"
         },
         {
             "type": "input_statement",
-            "name": "NAME"
+            "name": "onReturnStatement"
         }
     ],
     "previousStatement": null,
     "nextStatement": null,
+    "colour": 60,
     "inputsInline": true
 });
-Blockly.JavaScript.forBlock['fetch_url'] = function (block) {
-    const checkbox_isJsonOrNo = block.getFieldValue('isJsonOrNo');
-
+Blockly.JavaScript.forBlock['fetch_url'] = function (block, generator) {
     // TODO: change Order.ATOMIC to the correct operator precedence strength
-    const value_url = Blockly.JavaScript.valueToCode(block, 'url', javascript.Order.ATOMIC);
-
-    const variable_returntxtorjson = Blockly.JavaScript.getVariableName(block.getFieldValue('returnTxtOrJson'));
-    const statement_name = Blockly.JavaScript.statementToCode(block, 'NAME');
+    const value_url = generator.valueToCode(block, 'url', javascript.Order.ATOMIC);
+    
+    const variable_returnedData = generator.getVariableName(block.getFieldValue('returnedData'));
+    
+    const statement_onReturnStatement = generator.statementToCode(block, 'onReturnStatement');
 
     // TODO: Assemble javascript into the code variable.
-    const code = '...';
-    return code;
+    return `fetch(${value_url}).then(response=>response.text()).then(${variable_returnedData} => {\n${statement_onReturnStatement}})`;
 }
 
 
@@ -89,7 +78,7 @@ CUSTOM_BLOCKS.push({
     "tooltip": "Parse a JSON string into a JavaScript object.",
     "helpUrl": ""
 });
-Blockly.JavaScript.forBlock['json_parse'] = function (block) {
+Blockly.JavaScript.forBlock['json_parse'] = function (block, generator) {
     var textCode = Blockly.JavaScript.valueToCode(block, 'TEXT', Blockly.JavaScript.ORDER_ATOMIC) || "''";
     let code = `JSON.parse(${textCode})`;
     return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
@@ -111,7 +100,7 @@ CUSTOM_BLOCKS.push({
     "tooltip": "Convert an object/value to a JSON string.",
     "helpUrl": ""
 });
-Blockly.JavaScript.forBlock['json_stringify'] = function (block) {
+Blockly.JavaScript.forBlock['json_stringify'] = function (block, generator) {
     var valueCode = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC) || '{}';
     let code = `JSON.stringify(${valueCode})`;
     return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
