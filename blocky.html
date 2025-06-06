@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blocky Using TypeScript</title>
+
+    <!-- Load Blockly core -->
+    <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
+    <!-- Load the default blocks -->
+    <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
+    <!-- Load a generator -->
+    <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
+    <!-- Load a message file -->
+    <script src="https://unpkg.com/blockly/msg/en.js"></script>
+</head>
+
+<body>
+    <div id="blocklyDiv" style="height: 680px; width: 800px;"></div>
+    <br>
+    <button onclick="console.log(Blockly.JavaScript.workspaceToCode(workspace))">Generate JavaScript</button>
+    <br><br>
+    <button onclick="eval(Blockly.JavaScript.workspaceToCode(workspace))">Run</button>
+    
+    <script src="blockly/blocks/toolbox.js"></script>
+    <script src="blockly/blocks/data_category.js"></script>
+    <script>
+Blockly.defineBlocksWithJsonArray(CUSTOM_BLOCKS);
+const workspace = Blockly.inject('blocklyDiv', {
+    toolbox: TOOLBOX,
+    zoom: {
+        controls: true,
+        wheel: true,
+        startScale: 1,
+        maxScale: 3,
+        minScale: 0.3,
+        scaleSpeed: 1.2
+    },
+    trashcan: true,
+    move: {
+        scrollbars: true,
+        drag: true,
+        wheel: true
+    }
+});
+
+// get code
+// const code = Blockly.JavaScript.workspaceToCode(workspace);
+    </script>
+</body>
+
+</html>
