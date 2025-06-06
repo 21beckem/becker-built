@@ -17,10 +17,6 @@ let TOOLBOX = {
                 },
                 {
                     "kind": "block",
-                    "type": "controls_ifelse"
-                },
-                {
-                    "kind": "block",
                     "type": "logic_compare"
                 },
                 {
@@ -38,18 +34,6 @@ let TOOLBOX = {
                 {
                     "kind": "block",
                     "type": "logic_ternary"
-                },
-                {
-                    "kind": "block",
-                    "type": "controls_if_if"
-                },
-                {
-                    "kind": "block",
-                    "type": "controls_if_elseif"
-                },
-                {
-                    "kind": "block",
-                    "type": "controls_if_else"
                 }
             ]
         },
@@ -162,14 +146,6 @@ let TOOLBOX = {
                 },
                 {
                     "kind": "block",
-                    "type": "text_create_join_container"
-                },
-                {
-                    "kind": "block",
-                    "type": "text_create_join_item"
-                },
-                {
-                    "kind": "block",
                     "type": "text_append"
                 },
                 {
@@ -257,14 +233,6 @@ let TOOLBOX = {
                 },
                 {
                     "kind": "block",
-                    "type": "lists_create_with_container"
-                },
-                {
-                    "kind": "block",
-                    "type": "lists_create_with_item"
-                },
-                {
-                    "kind": "block",
                     "type": "lists_indexOf"
                 },
                 {
@@ -325,7 +293,7 @@ let TOOLBOX = {
         // },
         {
             "kind": "category",
-            "name": "Procedures",
+            "name": "Functions",
             "colour": 285,
             "contents": [
                 {
@@ -335,14 +303,6 @@ let TOOLBOX = {
                 {
                     "kind": "block",
                     "type": "procedures_defreturn"
-                },
-                {
-                    "kind": "block",
-                    "type": "procedures_mutatorcontainer"
-                },
-                {
-                    "kind": "block",
-                    "type": "procedures_mutatorarg"
                 },
                 {
                     "kind": "block",

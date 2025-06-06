@@ -7,25 +7,23 @@
     <title>Blocky Using TypeScript</title>
 
     <!-- Load Blockly core -->
-    <script src="https://unpkg.com/blockly/blockly_compressed.js"></script>
-    <!-- Load the default blocks -->
-    <script src="https://unpkg.com/blockly/blocks_compressed.js"></script>
-    <!-- Load a generator -->
-    <script src="https://unpkg.com/blockly/javascript_compressed.js"></script>
-    <!-- Load a message file -->
-    <script src="https://unpkg.com/blockly/msg/en.js"></script>
+    <script src="https://unpkg.com/blockly@12.1.0/blockly_compressed.js"></script>
+    <script src="https://unpkg.com/blockly@12.1.0/blocks_compressed.js"></script>
+    <script src="https://unpkg.com/blockly@12.1.0/javascript_compressed.js"></script>
+    <script src="https://unpkg.com/blockly@12.1.0/msg/en.js"></script>
 </head>
 
 <body>
     <div id="blocklyDiv" style="height: 680px; width: 800px;"></div>
     <br>
-    <button onclick="console.log(Blockly.JavaScript.workspaceToCode(workspace))">Generate JavaScript</button>
+    <button onclick="console.log( getBlocklyCode() )">Generate JavaScript</button>
     <br><br>
-    <button onclick="eval(Blockly.JavaScript.workspaceToCode(workspace))">Run</button>
+    <button onclick="eval( getBlocklyCode() )">Run</button>
     
     <script src="blockly/blocks/toolbox.js"></script>
     <script src="blockly/blocks/data_category.js"></script>
-    <script>
+    <script type="module">
+// import * as LexicalVariables from 'https://cdn.skypack.dev/@mit-app-inventor/blockly-block-lexical-variables';
 Blockly.defineBlocksWithJsonArray(CUSTOM_BLOCKS);
 const workspace = Blockly.inject('blocklyDiv', {
     toolbox: TOOLBOX,
@@ -44,9 +42,12 @@ const workspace = Blockly.inject('blocklyDiv', {
         wheel: true
     }
 });
+// LexicalVariables.init(workspace);
 
 // get code
-// const code = Blockly.JavaScript.workspaceToCode(workspace);
+window.getBlocklyCode = function() {
+    return Blockly.JavaScript.workspaceToCode(workspace);
+}
     </script>
 </body>
 
