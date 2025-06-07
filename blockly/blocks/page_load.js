@@ -23,7 +23,6 @@ javascript.javascriptGenerator.forBlock['page_load'] = function() {
 window.addEventListener('blocklyLoaded', () => {
 	// if there isn't already a page_load block, add one
 	let state = Blockly.serialization.workspaces.save(workspace);
-	console.log(state);
 	
 	if ( !state.blocks || !state.blocks.blocks || state.blocks.blocks.filter(x=>x.type=='page_load').length < 1 ) {
 		const page_load_block = workspace.newBlock('page_load');
