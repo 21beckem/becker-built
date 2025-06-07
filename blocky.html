@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blocky Using TypeScript</title>
+    <title>Becker-Built</title>
 
     <!-- Load Blockly core -->
     <script src="https://unpkg.com/blockly@12.1.0/blockly_compressed.js"></script>
@@ -21,34 +21,9 @@
     <button onclick="eval( getBlocklyCode() )">Run</button>
     
     <script src="blockly/blocks/toolbox.js"></script>
+    <script src="blockly/blocks/page_load.js"></script>
     <script src="blockly/blocks/data_category.js"></script>
-    <script type="module">
-// import * as LexicalVariables from 'https://cdn.skypack.dev/@mit-app-inventor/blockly-block-lexical-variables';
-Blockly.defineBlocksWithJsonArray(CUSTOM_BLOCKS);
-const workspace = Blockly.inject('blocklyDiv', {
-    toolbox: TOOLBOX,
-    zoom: {
-        controls: true,
-        wheel: true,
-        startScale: 1,
-        maxScale: 3,
-        minScale: 0.3,
-        scaleSpeed: 1.2
-    },
-    trashcan: true,
-    move: {
-        scrollbars: true,
-        drag: true,
-        wheel: true
-    }
-});
-// LexicalVariables.init(workspace);
-
-// get code
-window.getBlocklyCode = function() {
-    return Blockly.JavaScript.workspaceToCode(workspace);
-}
-    </script>
+    <script src="blockly/init.js"></script>
 </body>
 
 </html>
