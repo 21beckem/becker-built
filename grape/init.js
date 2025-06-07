@@ -5,6 +5,7 @@ function GrapeOnReady(editor) {
 
     grapeEditor = editor;
     grapeEditor.on('page:select', (page, previousPage) => {console.log(`New page selected: ${page.attributes.id}. Previous page: ${previousPage.attributes.id}`); });
+    grapeEditor.on('component:selected', onComponentSelected);
 }
 GrapesJsStudioSDK.createStudioEditor({
     onReady: GrapeOnReady,
@@ -53,7 +54,7 @@ GrapesJsStudioSDK.createStudioEditor({
     project: {
         default: {
             pages: [
-                { name: 'Home', component: '<center><h1>On No!</h1><p>Looks like something failed when loading your project, reload to retry</p></center>' },
+                { name: 'Home', component: '<center><h1>Oh No!</h1><p>Looks like something failed when loading your project, reload to retry</p></center>' },
             ]
         }
     },
@@ -117,4 +118,30 @@ function addBlockyButtonToTopBar() {
     n.classList.add('gs-cmp-tooltip', 'gs-utl-relative');
     n.innerHTML = `<span class="gs-cmp-tooltip-target gs-utl-block gs-utl-cursor-auto"><div class=""><button class="gs-utl-transition-colors gs-utl-cursor-pointer gs-utl-block gs-utl-p-1 gs-utl-text-sm gs-cmp-button gs-utl-rounded gs-theme-ring-focus focus:gs-utl-outline-none focus-visible:gs-utl-ring-2 gs-utl-ring-violet-300 gs-utl-ring-opacity-80 gs-theme-cl-bgA2" type="button" style="padding: 5px 10px; margin: 5px;" onclick="openBlocklyBtn()">Code Blocks</button></div></span>`;
     document.querySelector('.gs-cmp-editor-topbar__wrp-right.gs-utl-flex-1').firstChild.appendChild(n);
+}
+
+// add a button open code editor in the toolbar of selected elements
+function onComponentSelected() {
+    // get the selected componnet and its default toolbar
+    const selectedComponent = grapeEditor.getSelected();
+    
+    // cancel if not a button
+    if (selectedComponent.attributes.type !== 'button') {
+        return;
+    }
+    const defaultToolbar = selectedComponent.get('toolbar');
+
+    // set your command and icon here
+    const commandToAdd = 'tlb-settime';
+    const commandIcon = 'fa fa-clock';
+    
+    // check if this command already exists on this component toolbar
+    const commandExists = defaultToolbar.some(item => item.command === commandToAdd);
+    
+    // if it doesn't already exist, add it
+    if (!commandExists) {
+        selectedComponent.set({
+            toolbar: [ ...defaultToolbar, {  attributes: {class: commandIcon}, command: commandToAdd }]
+        });
+    }
 }
