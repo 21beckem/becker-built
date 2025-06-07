@@ -19,12 +19,15 @@ const workspace = Blockly.inject('blocklyDiv', {
 
 // autosave
 let saveDelay;
+const saveNow = () => {
+    document.getElementById('saveBtn').disabled = true;
+    const state = Blockly.serialization.workspaces.save(workspace);
+    localStorage.setItem('workspace-state', JSON.stringify(state));
+}
 const autoSave = () => {
+    document.getElementById('saveBtn').disabled = false;
     clearTimeout(saveDelay);
-    saveDelay = setTimeout(() => {
-        const state = Blockly.serialization.workspaces.save(workspace);
-        localStorage.setItem('workspace-state', JSON.stringify(state));
-    }, 1000);
+    saveDelay = setTimeout(saveNow, 1000);
 };
 
 // load state
@@ -37,6 +40,7 @@ async function loadState() {
         Blockly.serialization.workspaces.load(state, workspace);
     }
     window.dispatchEvent( new Event('blocklyLoaded') );
+    document.getElementById('blocklyDiv').classList.remove('loading');
 }
 loadState();
 
