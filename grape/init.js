@@ -5,6 +5,12 @@ function GrapeOnReady(editor) {
 
     grapeEditor = editor;
     grapeEditor.on('page:select', (page, previousPage) => {console.log(`New page selected: ${page.attributes.id}. Previous page: ${previousPage.attributes.id}`); });
+    
+    // button add onclick
+    grapeEditor.Commands.add('add-button-onclick', ()=>{
+        // open code editor and add a block for the on-click
+        openBlocklyBtn();
+    });
     grapeEditor.on('component:selected', onComponentSelected);
 }
 GrapesJsStudioSDK.createStudioEditor({
@@ -130,18 +136,18 @@ function onComponentSelected() {
         return;
     }
     const defaultToolbar = selectedComponent.get('toolbar');
-
-    // set your command and icon here
-    const commandToAdd = 'tlb-settime';
-    const commandIcon = 'fa fa-clock';
+    console.log('defaultToolbar', defaultToolbar);
     
     // check if this command already exists on this component toolbar
-    const commandExists = defaultToolbar.some(item => item.command === commandToAdd);
+    const commandExists = defaultToolbar.some(item => item.command === 'add-button-onclick');
     
     // if it doesn't already exist, add it
     if (!commandExists) {
         selectedComponent.set({
-            toolbar: [ ...defaultToolbar, {  attributes: {class: commandIcon}, command: commandToAdd }]
+            toolbar: [ ...defaultToolbar, {
+                label: '<svg viewBox="0 0 24 24" role="presentation" class="gs-cmp-icon" style="width: 18px; height: 18px;"><path d="M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z" style="fill: currentcolor;"></path></svg>',
+                command: 'add-button-onclick'
+            }]
         });
     }
 }
