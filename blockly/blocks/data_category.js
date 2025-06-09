@@ -132,6 +132,11 @@ CUSTOM_BLOCKS.push({
     "output": null,
     "colour": 60
 });
+Blockly.JavaScript.forBlock['JSON_object'] = function(block, generator) {
+  const statementMembers = generator.statementToCode(block, 'MEMBERS');
+  const code = '{\n' + statementMembers.slice(0, -2) + '\n}';
+  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+};
 
 
 // ---- JSON Object ----
@@ -158,3 +163,9 @@ CUSTOM_BLOCKS.push({
   "nextStatement": null,
   "colour": 60
 });
+Blockly.JavaScript.forBlock['JSON_item'] = function(block, generator) {
+  const name = JSON.stringify( block.getFieldValue('MEMBER_NAME') ).slice(1, -1);
+  const value = generator.valueToCode(block, 'MEMBER_VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+  const code = `"${name}": ${value},\n`;
+  return code;
+};
