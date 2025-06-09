@@ -14,6 +14,14 @@ TOOLBOX.contents.push({
         {
             "kind": "block",
             "type": "json_stringify"
+        },
+        {
+            "kind": "block",
+            "type": "JSON_object"
+        },
+        {
+            "kind": "block",
+            "type": "JSON_item"
         }
     ]
 });
@@ -105,3 +113,48 @@ Blockly.JavaScript.forBlock['json_stringify'] = function (block, generator) {
     let code = `JSON.stringify(${valueCode})`;
     return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+
+
+// ---- JSON Object ----
+CUSTOM_BLOCKS.push({
+    "type": "JSON_object",
+    "message0": "{ %1 %2 }",
+    "args0": [
+        {
+            "type": "input_dummy"
+        },
+        {
+            "type": "input_statement",
+            "name": "MEMBERS",
+            "check": "JSON_item"
+        }
+    ],
+    "output": null,
+    "colour": 60
+});
+
+
+// ---- JSON Object ----
+CUSTOM_BLOCKS.push({
+  "type": "JSON_item",
+  "message0": "%1 %2 %3",
+  "args0": [
+    {
+      "type": "field_input",
+      "name": "MEMBER_NAME",
+      "text": ""
+    },
+    {
+      "type": "field_label",
+      "name": "COLON",
+      "text": ":"
+    },
+    {
+      "type": "input_value",
+      "name": "MEMBER_VALUE"
+    }
+  ],
+  "previousStatement": null,
+  "nextStatement": null,
+  "colour": 60
+});
