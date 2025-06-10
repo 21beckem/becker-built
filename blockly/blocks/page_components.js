@@ -84,20 +84,19 @@ CUSTOM_BLOCKS.push({
         },
         {
             "type": "input_value",
-            "name": "component",
+            "name": "setValue",
         }
     ]
 });
-Blockly.JavaScript.forBlock['fetch_url'] = function (block, generator) {
-    // TODO: change Order.ATOMIC to the correct operator precedence strength
-    const value_url = generator.valueToCode(block, 'url', javascript.Order.ATOMIC);
-    
-    const variable_returnedData = generator.getVariableName(block.getFieldValue('returnedData'));
-    
-    const statement_onReturnStatement = generator.statementToCode(block, 'onReturnStatement');
+Blockly.JavaScript.forBlock['component_set_prop'] = function (block, generator) {
+    const dropdown_compid = block.getFieldValue('compId');
+    const dropdown_property = block.getFieldValue('property');
+    let value_setvalue = generator.valueToCode(block, 'setValue', javascript.Order.ATOMIC);
 
-    // TODO: Assemble javascript into the code variable.
-    return `fetch(${value_url}).then(response=>response.text()).then(${variable_returnedData} => {\n${statement_onReturnStatement}})`;
+    value_setvalue = (dropdown_property == 'style.display') ? (
+        (value_setvalue == 'false' || value_setvalue == '0' || value_setvalue == 0) ? '"none"' : '"unset"'
+    ) : value_setvalue;
+    return `document.getElementById('${dropdown_compid}').${dropdown_property} = ${value_setvalue};`;
 }
 
 
