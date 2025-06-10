@@ -5,7 +5,7 @@ function GrapeOnReady(editor) {
     addBlockyButtonToTopBar();
 
     grapeEditor = editor;
-    grapeEditor.on('page:select', (page, previousPage) => {console.log(`New page selected: ${page.attributes.id}. Previous page: ${previousPage.attributes.id}`); });
+    grapeEditor.on('page:select', (page, previousPage) => {currentPageId = page.attributes.id; });
     
     // button add onclick
     grapeEditor.Commands.add('add-button-onclick', ()=>{
@@ -91,7 +91,7 @@ GrapesJsStudioSDK.createStudioEditor({
         type: 'self',
         // Provide a custom handler for saving the project data.
         onSave: async ({ project }) => {
-            return;
+            return localStorage.setItem('grapesjs-project', JSON.stringify(project));
             console.log('all Buttons', findAllButtonsPerPage(project) );
             console.log('project', project);
             throw new Error('Implement your "onSave"!');
@@ -101,8 +101,10 @@ GrapesJsStudioSDK.createStudioEditor({
         },
         // Provide a custom handler for loading project data.
         onLoad: async () => {
-            const response = await fetch('grape/dummy_project.json');
-            const project = await response.json();
+            let project = localStorage.getItem('grapesjs-project') || '{}';
+            project = JSON.parse(project);
+            // set current page id to the first page
+            currentPageId = project.pages[0].id;
             // The project JSON is expected to be returned inside an object.
             return { project };
         },

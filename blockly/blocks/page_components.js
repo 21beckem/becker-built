@@ -1,21 +1,43 @@
-function makeComponentCategory() {
-    return {
-        "kind": "category",
-        "name": "Page Components",
-        "contents": []
+// title case function
+String.prototype.toProperCase = function () {
+    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+
+const PAGE_COMPONENTS = JSON.parse(localStorage.getItem('pageComponents')) || {};
+console.log('PAGE_COMPONENTS', PAGE_COMPONENTS);
+
+function convertGrapesComponentsToBlockly(big_page_comps) {
+    let cats = [];
+    function nestedCategories(component) {
+        let thisC = {
+            kind: 'category',
+            id: component.attributes.id,
+            name: component['custom-name'] || component.type.toProperCase(),
+        }
+        let myCats = [];
+        if (component.components) {
+            component.components.forEach(comp => {
+                if (comp.type != 'contentEditable' && comp.type != 'textnode') {
+                    myCats.push( nestedCategories(comp) );
+                }
+            });
+            myCats.push( {kind: 'block', type: 'logic_boolean'} );
+            thisC.contents = myCats;
+        }
+        return thisC;
     }
+    big_page_comps.forEach(component => {
+        cats.push( nestedCategories(component) );
+    });
+    console.log('cats', cats);
+    return cats;
 }
+
 TOOLBOX.contents.push({
     "kind": "category",
     "name": "Page Components",
     "colour": 60,
-    "contents": [
-        makeComponentCategory(),
-        makeComponentCategory(),
-        makeComponentCategory(),
-        makeComponentCategory(),
-        makeComponentCategory()
-    ]
+    "contents": convertGrapesComponentsToBlockly(PAGE_COMPONENTS)
 });
 
 // ---- Fetch Block ----

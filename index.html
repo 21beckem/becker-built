@@ -79,13 +79,16 @@ div.gs-cmp-topbar-right.gs-utl-px-2.gs-utl-flex.gs-utl-flex-nowrap.gs-utl-space-
                 <span style="font-size: 22px;">Code Editor</span>
                 <button onclick="document.getElementById('blocklyOverlay').classList.add('hidden')"><svg viewBox="0 0 24 24" role="presentation" class="gs-cmp-icon" style="width: 1.5rem; height: 1.5rem;"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" style="fill: currentcolor;"></path></svg></button>
             </div>
-            <iframe src="blocky.html" frameborder="0"></iframe>
+            <iframe id="blocklyWindowIframe" src="" frameborder="0"></iframe>
         </div>
     </div>
 
     <script src="grape/init.js"></script>
     <script>
-function openBlocklyBtn() {
+async function openBlocklyBtn() {
+    localStorage.setItem('currentPageId', currentPageId);
+    localStorage.setItem('pageComponents', JSON.stringify( grapeEditor.getComponents() ));
+    document.getElementById('blocklyWindowIframe').src = 'blocky.html';
     document.getElementById('blocklyOverlay').classList.remove('hidden');
 }
 
