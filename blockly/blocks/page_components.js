@@ -74,17 +74,17 @@ CUSTOM_BLOCKS.push({
     "args0": [
         {
             "type": "field_dropdown",
-            "name": "NAME",
+            "name": "compId",
             "options": GrapeDropdown
         },
         {
             "type": "field_dropdown",
-            "name": "NAME",
+            "name": "property",
             "options": ALL_COMP_ATTR
         },
         {
             "type": "input_value",
-            "name": "comp"
+            "name": "component",
         }
     ]
 });
