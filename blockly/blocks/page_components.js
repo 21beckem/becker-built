@@ -36,7 +36,26 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
                     myCats.push( nestedCategories(comp) );
                 }
             });
-            myCats.push( {kind: 'block', type: 'component_set_prop'} );
+            // add a block for each of the attributes that could be changed
+            ALL_COMP_ATTR.forEach(attr => {
+                myCats.push({
+                    kind: 'block',
+                    type: 'component_get_prop',
+                    fields: {
+                        compId: thisC.id,
+                        property: attr[1]
+                    }
+                },
+                {
+                    kind: 'block',
+                    type: 'component_set_prop',
+                    fields: {
+                        compId: thisC.id,
+                        property: attr[1]
+                    }
+                }
+            );
+            });
             thisC.contents = myCats;
         }
         return thisC;
@@ -100,27 +119,40 @@ Blockly.JavaScript.forBlock['component_set_prop'] = function (block, generator) 
 }
 
 
-// ---- JSON Parse ----
+// ---- Get Block ----
 CUSTOM_BLOCKS.push({
-    "type": "json_parse",
-    "message0": "parse JSON %1",
+    "type": "component_get_prop",
+    "tooltip": "",
+    "message0": "Get %1 . %2 %3",
+    "output": null,
+    "colour": 285,
     "args0": [
         {
-            "type": "input_value",
-            "name": "TEXT",
-            "check": "String"
+            "type": "field_dropdown",
+            "name": "compId",
+            "options": GrapeDropdown
+        },
+        {
+            "type": "field_dropdown",
+            "name": "property",
+            "options": ALL_COMP_ATTR
+        },
+        {
+            "type": "input_dummy",
+            "name": "setValue"
         }
-    ],
-    "output": 'json',
-    "colour": 60,
-    "tooltip": "Parse a JSON string into a JavaScript object.",
-    "helpUrl": ""
+    ]
 });
-Blockly.JavaScript.forBlock['json_parse'] = function (block, generator) {
-    var textCode = Blockly.JavaScript.valueToCode(block, 'TEXT', Blockly.JavaScript.ORDER_ATOMIC) || "''";
-    let code = `JSON.parse(${textCode})`;
-    return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
-};
+Blockly.JavaScript.forBlock['component_get_prop'] = function (block, generator) {
+    const dropdown_compid = block.getFieldValue('compId');
+    const dropdown_property = block.getFieldValue('property');
+
+    let code = `document.getElementById('${dropdown_compid}').${dropdown_property}`;
+    if (dropdown_property == 'style.display') {
+        code = `(document.getElementById('${dropdown_compid}').${dropdown_property}!='none')`;
+    }
+    return [code, javascript.Order.NONE];
+}
 
 
 // ---- JSON Stringify ----
