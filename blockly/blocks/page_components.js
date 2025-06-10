@@ -1,8 +1,10 @@
 // title case function
 String.prototype.toProperCase = function () {
-    return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+    return this.replace(/\w\S*/g, function (txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
 };
 const PAGE_COMPONENTS = JSON.parse(localStorage.getItem('pageComponents')) || {};
+console.log('PAGE_COMPONENTS', PAGE_COMPONENTS);
+
 
 // make list of all attributes that can be set or got on a component
 const ALL_COMP_ATTR = [
@@ -26,16 +28,24 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
             name: component['custom-name'] || component.type.toProperCase(),
         }
         if (thisC.name && thisC.id) {
-            list.push( [thisC.name, thisC.id] );
+            list.push([thisC.name, thisC.id]);
         }
 
         let myCats = [];
         if (component.components) {
             component.components.forEach(comp => {
                 if (comp.type != 'contentEditable' && comp.type != 'textnode') {
-                    myCats.push( nestedCategories(comp) );
+                    myCats.push(nestedCategories(comp));
                 }
             });
+            // add all on-event blocks
+            myCats.push({
+                kind: 'block',
+                type: 'component_onclick',
+                fields: {
+                    compId: thisC.id
+                }
+            })
             // add a block for each of the attributes that could be changed
             ALL_COMP_ATTR.forEach(attr => {
                 myCats.push({
@@ -46,22 +56,22 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
                         property: attr[1]
                     }
                 },
-                {
-                    kind: 'block',
-                    type: 'component_set_prop',
-                    fields: {
-                        compId: thisC.id,
-                        property: attr[1]
+                    {
+                        kind: 'block',
+                        type: 'component_set_prop',
+                        fields: {
+                            compId: thisC.id,
+                            property: attr[1]
+                        }
                     }
-                }
-            );
+                );
             });
             thisC.contents = myCats;
         }
         return thisC;
     }
     big_page_comps.forEach(component => {
-        cats.push( nestedCategories(component) );
+        cats.push(nestedCategories(component));
     });
     console.log('cats', cats);
     cats.unshift({
@@ -70,9 +80,9 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
         "colour": 60,
         "contents": []
     });
-    return [ cats, list ];
+    return [cats, list];
 }
-const [ GrapeToolbox, GrapeDropdown ] = convertGrapesComponentsToBlockly(PAGE_COMPONENTS);
+const [GrapeToolbox, GrapeDropdown] = convertGrapesComponentsToBlockly(PAGE_COMPONENTS);
 
 // add all page components to the toolbar
 TOOLBOX.contents.push({
@@ -155,26 +165,43 @@ Blockly.JavaScript.forBlock['component_get_prop'] = function (block, generator) 
 }
 
 
-// ---- JSON Stringify ----
+// ---- OnClick Block ----
 CUSTOM_BLOCKS.push({
-    "type": "json_stringify",
-    "message0": "stringify JSON %1",
+    "type": "component_onclick",
+    "tooltip": "",
+    "helpUrl": "",
+    "message0": "When %1 .Click %2 %3",
     "args0": [
         {
-            "type": "input_value",
-            "name": "VALUE"
+            "type": "field_dropdown",
+            "name": "compId",
+            "options": GrapeDropdown
+        },
+        {
+            "type": "input_dummy",
+            "name": "0"
+        },
+        {
+            "type": "input_statement",
+            "name": "onClick"
         }
     ],
-    "output": "String",
-    "colour": 60,
-    "tooltip": "Convert an object/value to a JSON string.",
-    "helpUrl": ""
+    "colour": 255
 });
 Blockly.JavaScript.forBlock['json_stringify'] = function (block, generator) {
     var valueCode = Blockly.JavaScript.valueToCode(block, 'VALUE', Blockly.JavaScript.ORDER_ATOMIC) || '{}';
     let code = `JSON.stringify(${valueCode})`;
     return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
+Blockly.JavaScript.forBlock['component_onclick'] = function (block, generator) {
+  const dropdown_compid = block.getFieldValue('compId');
+
+  const statement_onclick = generator.statementToCode(block, 'onClick');
+
+  // TODO: Assemble javascript into the code variable.
+  const code = `document.getElementById('${dropdown_compid}').addEventListener('click', () => {\n${statement_onclick}});`;
+  return code;
+}
 
 
 // ---- JSON Object ----
@@ -194,40 +221,40 @@ CUSTOM_BLOCKS.push({
     "output": null,
     "colour": 60
 });
-Blockly.JavaScript.forBlock['JSON_object'] = function(block, generator) {
-  const statementMembers = generator.statementToCode(block, 'MEMBERS');
-  const code = '{\n' + statementMembers.slice(0, -2) + '\n}';
-  return [code, Blockly.JavaScript.ORDER_ATOMIC];
+Blockly.JavaScript.forBlock['JSON_object'] = function (block, generator) {
+    const statementMembers = generator.statementToCode(block, 'MEMBERS');
+    const code = '{\n' + statementMembers.slice(0, -2) + '\n}';
+    return [code, Blockly.JavaScript.ORDER_ATOMIC];
 };
 
 
 // ---- JSON Object ----
 CUSTOM_BLOCKS.push({
-  "type": "JSON_item",
-  "message0": "%1 %2 %3",
-  "args0": [
-    {
-      "type": "field_input",
-      "name": "MEMBER_NAME",
-      "text": ""
-    },
-    {
-      "type": "field_label",
-      "name": "COLON",
-      "text": ":"
-    },
-    {
-      "type": "input_value",
-      "name": "MEMBER_VALUE"
-    }
-  ],
-  "previousStatement": null,
-  "nextStatement": null,
-  "colour": 60
+    "type": "JSON_item",
+    "message0": "%1 %2 %3",
+    "args0": [
+        {
+            "type": "field_input",
+            "name": "MEMBER_NAME",
+            "text": ""
+        },
+        {
+            "type": "field_label",
+            "name": "COLON",
+            "text": ":"
+        },
+        {
+            "type": "input_value",
+            "name": "MEMBER_VALUE"
+        }
+    ],
+    "previousStatement": null,
+    "nextStatement": null,
+    "colour": 60
 });
-Blockly.JavaScript.forBlock['JSON_item'] = function(block, generator) {
-  const name = JSON.stringify( block.getFieldValue('MEMBER_NAME') ).slice(1, -1);
-  const value = generator.valueToCode(block, 'MEMBER_VALUE', Blockly.JavaScript.ORDER_ATOMIC);
-  const code = `"${name}": ${value},\n`;
-  return code;
+Blockly.JavaScript.forBlock['JSON_item'] = function (block, generator) {
+    const name = JSON.stringify(block.getFieldValue('MEMBER_NAME')).slice(1, -1);
+    const value = generator.valueToCode(block, 'MEMBER_VALUE', Blockly.JavaScript.ORDER_ATOMIC);
+    const code = `"${name}": ${value},\n`;
+    return code;
 };
