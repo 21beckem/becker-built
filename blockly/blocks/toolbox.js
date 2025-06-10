@@ -9,6 +9,10 @@ let TOOLBOX = {
             "contents": [
                 {
                     "kind": "block",
+                    "type": "dictionaries_create_with"
+                },
+                {
+                    "kind": "block",
                     "type": "logic_boolean"
                 },
                 {

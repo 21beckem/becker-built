@@ -1,4 +1,5 @@
 var grapeEditor;
+var currentPageId;
 function GrapeOnReady(editor) {
     console.log('GrapesJS Studio Editor is ready!', editor);
     addBlockyButtonToTopBar();
@@ -90,6 +91,7 @@ GrapesJsStudioSDK.createStudioEditor({
         type: 'self',
         // Provide a custom handler for saving the project data.
         onSave: async ({ project }) => {
+            return;
             console.log('all Buttons', findAllButtonsPerPage(project) );
             console.log('project', project);
             throw new Error('Implement your "onSave"!');
@@ -99,9 +101,7 @@ GrapesJsStudioSDK.createStudioEditor({
         },
         // Provide a custom handler for loading project data.
         onLoad: async () => {
-            console.log('onLoad');
-            throw new Error('Implement your "onLoad"!');
-            const response = await fetch('PROJECT_LOAD_URL');
+            const response = await fetch('grape/dummy_project.json');
             const project = await response.json();
             // The project JSON is expected to be returned inside an object.
             return { project };
@@ -136,7 +136,6 @@ function onComponentSelected() {
         return;
     }
     const defaultToolbar = selectedComponent.get('toolbar');
-    console.log('defaultToolbar', defaultToolbar);
     
     // check if this command already exists on this component toolbar
     const commandExists = defaultToolbar.some(item => item.command === 'add-button-onclick');

@@ -1,0 +1,141 @@
+{
+    "assets": [],
+    "styles": [
+        {
+            "selectors": [
+                "gjs-container"
+            ],
+            "style": {
+                "width": "90%",
+                "margin": "0 auto",
+                "max-width": "1200px"
+            },
+            "group": "cmp:container"
+        },
+        {
+            "selectors": [
+                "gjs-section"
+            ],
+            "style": {
+                "display": "flex",
+                "padding": "50px 0"
+            },
+            "group": "cmp:section"
+        },
+        {
+            "selectors": [
+                "#i5ef5"
+            ],
+            "style": {
+                "text-align": "center"
+            }
+        }
+    ],
+    "pages": [
+        {
+            "name": "Home",
+            "frames": [
+                {
+                    "component": {
+                        "type": "wrapper",
+                        "attributes": {
+                            "id": "inlh"
+                        },
+                        "components": [
+                            {
+                                "type": "section",
+                                "classes": [
+                                    "gjs-section"
+                                ],
+                                "attributes": {
+                                    "id": "i8b82"
+                                },
+                                "components": [
+                                    {
+                                        "type": "container",
+                                        "classes": [
+                                            "gjs-container"
+                                        ],
+                                        "attributes": {
+                                            "id": "i4uve"
+                                        },
+                                        "components": [
+                                            {
+                                                "type": "heading",
+                                                "attributes": {
+                                                    "id": "iksk"
+                                                },
+                                                "components": [
+                                                    {
+                                                        "type": "text",
+                                                        "attributes": {
+                                                            "id": "i5ef5"
+                                                        },
+                                                        "components": [
+                                                            {
+                                                                "type": "textnode",
+                                                                "content": "Let’s Go!"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "tagName": "p",
+                                                "type": "text",
+                                                "attributes": {
+                                                    "id": "i73s"
+                                                },
+                                                "components": [
+                                                    {
+                                                        "type": "textnode",
+                                                        "content": "I Love it when things work!"
+                                                    }
+                                                ]
+                                            },
+                                            {
+                                                "type": "button",
+                                                "attributes": {
+                                                    "type": "button",
+                                                    "id": "irg3j"
+                                                },
+                                                "components": [
+                                                    {
+                                                        "type": "contentEditable",
+                                                        "components": [
+                                                            {
+                                                                "type": "textnode",
+                                                                "content": "I am button which you should click!"
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "head": {
+                            "type": "head"
+                        },
+                        "docEl": {
+                            "tagName": "html"
+                        }
+                    },
+                    "id": "WEKlPOxAu97C8BZ8"
+                }
+            ],
+            "id": "LvCqaU1m9U0rS0nF"
+        }
+    ],
+    "symbols": [],
+    "dataSources": [],
+    "custom": {
+        "projectType": "web",
+        "id": "",
+        "globalPageSettings": {
+            "fonts": {}
+        }
+    }
+}
