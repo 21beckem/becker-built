@@ -77,7 +77,7 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
     cats.unshift({
         "kind": "category",
         "name": "Tools",
-        "colour": 60,
+        "colour": 255,
         "contents": []
     });
     return [cats, list];
@@ -88,7 +88,7 @@ const [GrapeToolbox, GrapeDropdown] = convertGrapesComponentsToBlockly(PAGE_COMP
 TOOLBOX.contents.push({
     "kind": "category",
     "name": "Page Components",
-    "colour": 60,
+    "colour": 255,
     "contents": GrapeToolbox
 });
 

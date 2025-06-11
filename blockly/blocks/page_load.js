@@ -17,7 +17,19 @@ CUSTOM_BLOCKS.push({
 	"nextStatement": null
 });
 javascript.javascriptGenerator.forBlock['page_load'] = function() {
-	return '';
+	return `class PageLoad {
+	static getPageStartValue() {
+		let params = new URLSearchParams(window.location.search);
+		let startValue = params.get('startValue');
+		if (!startValue) {
+			return null;
+		} else {
+			return decodeURIComponent( startValue );
+		}
+	}
+}
+
+`;
 }
 
 window.addEventListener('blocklyLoaded', () => {
