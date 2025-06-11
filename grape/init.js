@@ -6,6 +6,9 @@ function GrapeOnReady(editor) {
 
     grapeEditor = editor;
     grapeEditor.on('page:select', (page, previousPage) => {currentPageId = page.attributes.id; });
+
+    // add devices
+    addAddDevicesBtn();
     
     // button add onclick
     grapeEditor.Commands.add('add-button-onclick', (e)=>{
@@ -133,14 +136,16 @@ function onComponentSelected() {
     // get the selected componnet and its default toolbar
     const selectedComponent = grapeEditor.getSelected();
     
-    // cancel if not a button
+    // save the last selected component
     window.lastSelectedGrapeComponent = selectedComponent;
-    if (selectedComponent.attributes.type !== 'button') {
-        return;
-    }
-    const defaultToolbar = selectedComponent.get('toolbar');
+
+    // cancel if not a button
+    // if (selectedComponent.attributes.type !== 'button') {
+    //     return;
+    // }
     
     // check if this command already exists on this component toolbar
+    const defaultToolbar = selectedComponent.get('toolbar');
     const commandExists = defaultToolbar.some(item => item.command === 'add-button-onclick');
     
     // if it doesn't already exist, add it
@@ -152,4 +157,33 @@ function onComponentSelected() {
             }]
         });
     }
+}
+
+function addAddDevicesBtn() {
+    // remove all default devices
+
+    // add device manager device
+    grapeEditor.Devices.add({
+        id: 'manage_devices_btn',
+        name: 'Manage Devices',
+    });
+
+    // add all user-created devices.
+    // If no deveices are created, add Desktop, Tablet, Mobile Landskape and Mobile Portrait
+
+    
+    // when manage devices is clicked
+    grapeEditor.on('device:select', (device, previousDevice) => {
+        if (device.attributes.id === 'manage_devices_btn') {
+            grapeEditor.Devices.select(previousDevice.attributes.id);
+            
+            // create New Device Form
+            let wrapper = document.createElement('div');
+            wrapper.innerHTML = `<input type="text" placeholder="Device Name">`
+            grapeEditor.Modal.open({
+                title: 'New Device',
+                content: wrapper
+            });
+        }
+    });
 }
