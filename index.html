@@ -85,9 +85,16 @@ div.gs-cmp-topbar-right.gs-utl-px-2.gs-utl-flex.gs-utl-flex-nowrap.gs-utl-space-
 
     <script src="grape/init.js"></script>
     <script>
-async function openBlocklyBtn() {
+async function openBlocklyBtn(openGrapeComponent=null) {
     localStorage.setItem('currentPageId', currentPageId);
     localStorage.setItem('pageComponents', JSON.stringify( grapeEditor.getComponents() ));
+    console.log('openGrapeComponent', openGrapeComponent);
+    
+    if (openGrapeComponent != null) {
+        sessionStorage.setItem('openGrapeComponentInBlockly', openGrapeComponent);
+    } else {
+        sessionStorage.removeItem('openGrapeComponentInBlockly');
+    }
     document.getElementById('blocklyWindowIframe').src = 'blocky.html';
     document.getElementById('blocklyOverlay').classList.remove('hidden');
 }

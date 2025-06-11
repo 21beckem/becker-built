@@ -17,6 +17,25 @@ const workspace = Blockly.inject('blocklyDiv', {
     }
 });
 
+// open a selected grapes component if I just came from the grapesjs editor
+window.addEventListener('blocklyLoaded', (e) => {
+    if (sessionStorage.getItem('openGrapeComponentInBlockly') != null) {
+        let compId = sessionStorage.getItem('openGrapeComponentInBlockly');
+        let cat = workspace.toolbox.getToolboxItemById( sessionStorage.getItem('openGrapeComponentInBlockly') );
+        
+        // recursively open the parents of the selected component
+        let parent = cat.parent_;
+        while (parent != null) {
+            parent.setExpanded(true);
+            parent = parent.parent_;
+        }
+
+        // open the selected component
+        workspace.toolbox.setSelectedItem(cat);
+    };
+    sessionStorage.removeItem('openGrapeComponentInBlockly');
+});
+
 // autosave
 let saveDelay;
 const saveNow = () => {

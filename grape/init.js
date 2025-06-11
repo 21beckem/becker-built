@@ -8,9 +8,9 @@ function GrapeOnReady(editor) {
     grapeEditor.on('page:select', (page, previousPage) => {currentPageId = page.attributes.id; });
     
     // button add onclick
-    grapeEditor.Commands.add('add-button-onclick', ()=>{
+    grapeEditor.Commands.add('add-button-onclick', (e)=>{
         // open code editor and add a block for the on-click
-        openBlocklyBtn();
+        openBlocklyBtn(openGrapeComponent = window.lastSelectedGrapeComponent.ccid);
     });
     grapeEditor.on('component:selected', onComponentSelected);
 }
@@ -134,6 +134,7 @@ function onComponentSelected() {
     const selectedComponent = grapeEditor.getSelected();
     
     // cancel if not a button
+    window.lastSelectedGrapeComponent = selectedComponent;
     if (selectedComponent.attributes.type !== 'button') {
         return;
     }

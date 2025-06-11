@@ -25,6 +25,7 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
         let thisC = {
             kind: 'category',
             id: component.attributes.id,
+            toolboxitemid: component.attributes.id,
             name: component['custom-name'] || component.type.toProperCase(),
         }
         if (thisC.name && thisC.id) {
@@ -74,12 +75,12 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
         cats.push(nestedCategories(component));
     });
     console.log('cats', cats);
-    cats.unshift({
-        "kind": "category",
-        "name": "Tools",
-        "colour": 255,
-        "contents": []
-    });
+    // cats.unshift({
+    //     "kind": "category",
+    //     "name": "Tools",
+    //     "colour": 255,
+    //     "contents": []
+    // });
     return [cats, list];
 }
 const [GrapeToolbox, GrapeDropdown] = convertGrapesComponentsToBlockly(PAGE_COMPONENTS);
@@ -89,6 +90,7 @@ TOOLBOX.contents.push({
     "kind": "category",
     "name": "Page Components",
     "colour": 255,
+    "expanded": "true",
     "contents": GrapeToolbox
 });
 

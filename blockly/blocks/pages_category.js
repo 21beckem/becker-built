@@ -9,15 +9,15 @@ TOOLBOX.contents.push({
         },
         {
             "kind": "block",
+            "type": "get_page_start_value"
+        },
+        {
+            "kind": "block",
             "type": "open_page"
         },
         {
             "kind": "block",
             "type": "open_page_with_start_value"
-        },
-        {
-            "kind": "block",
-            "type": "get_page_start_value"
         }
     ]
 });
