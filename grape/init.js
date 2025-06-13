@@ -61,6 +61,9 @@ GrapesJsStudioSDK.createStudioEditor({
             }
         }
     },
+    selectorManager: {
+        componentFirst: 1,
+    },
     project: {
         default: {
             pages: [
@@ -181,7 +184,7 @@ function addAddDevicesBtn() {
             let wrapper = document.createElement('div');
             wrapper.innerHTML = `<input type="text" placeholder="Device Name">`
             grapeEditor.Modal.open({
-                title: 'New Device',
+                title: 'Manage Devices',
                 content: wrapper
             });
         }

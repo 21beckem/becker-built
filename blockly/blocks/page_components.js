@@ -26,49 +26,50 @@ function convertGrapesComponentsToBlockly(big_page_comps) {
             kind: 'category',
             id: component.attributes.id,
             toolboxitemid: component.attributes.id,
-            name: component['custom-name'] || component.type.toProperCase(),
+            name: component['custom-name'] || component.type || 'Div'
         }
         if (thisC.name && thisC.id) {
             list.push([thisC.name, thisC.id]);
         }
+        
 
         let myCats = [];
         if (component.components) {
-            component.components.forEach(comp => {
+            component.components.forEach( (comp, i) => {
                 if (comp.type != 'contentEditable' && comp.type != 'textnode') {
                     myCats.push(nestedCategories(comp));
                 }
             });
-            // add all on-event blocks
+        }
+        // add all on-event blocks
+        myCats.push({
+            kind: 'block',
+            type: 'component_onclick',
+            fields: {
+                compId: thisC.id
+            }
+        })
+        // add a block for each of the attributes that could be changed
+        ALL_COMP_ATTR.forEach(attr => {
             myCats.push({
                 kind: 'block',
-                type: 'component_onclick',
+                type: 'component_get_prop',
                 fields: {
-                    compId: thisC.id
+                    compId: thisC.id,
+                    property: attr[1]
                 }
-            })
-            // add a block for each of the attributes that could be changed
-            ALL_COMP_ATTR.forEach(attr => {
-                myCats.push({
+            },
+                {
                     kind: 'block',
-                    type: 'component_get_prop',
+                    type: 'component_set_prop',
                     fields: {
                         compId: thisC.id,
                         property: attr[1]
                     }
-                },
-                    {
-                        kind: 'block',
-                        type: 'component_set_prop',
-                        fields: {
-                            compId: thisC.id,
-                            property: attr[1]
-                        }
-                    }
-                );
-            });
-            thisC.contents = myCats;
-        }
+                }
+            );
+        });
+        thisC.contents = myCats;
         return thisC;
     }
     big_page_comps.forEach(component => {
