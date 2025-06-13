@@ -5,10 +5,12 @@ function GrapeOnReady(editor) {
     addBlockyButtonToTopBar();
 
     grapeEditor = editor;
+
+    // save last selected page
     grapeEditor.on('page:select', (page, previousPage) => {currentPageId = page.attributes.id; });
 
     // add devices
-    addAddDevicesBtn();
+    myOwnDeviceManager();
 
     // add custom blocks to side panel
     addBasicDivBoxToBlockManager();
@@ -67,10 +69,12 @@ GrapesJsStudioSDK.createStudioEditor({
     selectorManager: {
         componentFirst: 1,
     },
-    devicePreviewMode: 0,
-    canvas: {
-        styles: [ 'http://127.0.0.1:5500/grape/custom-canvas-styles.css' ]
+    cssComposer: {
+        mediaAdd: false,
+        mediaText: '',
+        avoidDefaults: true,
     },
+    devicePreviewMode: 0,
     project: {
         default: {
             pages: [
@@ -132,7 +136,6 @@ GrapesJsStudioSDK.createStudioEditor({
         StudioSdkPlugins_canvasGridMode.init()
     ]
 });
-
 function addBasicDivBoxToBlockManager() {
     grapeEditor.BlockManager.add('Box', {
         media: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M2 20h20V4H2v16Zm-1 0V4a1 1 0 0 1 1-1h20a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1Z"/></svg>',
@@ -145,7 +148,12 @@ function addBasicDivBoxToBlockManager() {
     });
     let addBasicBoxStylesToCanvasHeader = () => {
         let s = document.createElement('style');
-        s.innerHTML = `[data-gjs-type="Box"]:empty:before {
+        s.innerHTML = `
+[data-gjs-type="Box"]:empty {
+    text-decoration: none;
+    padding: 5px;
+}
+[data-gjs-type="Box"]:empty:before {
     background-color: #ddd;
     color: #000;
     font-size: 16px;
@@ -204,31 +212,30 @@ function onComponentSelected() {
     }
 }
 
-function addAddDevicesBtn() {
-    // remove all default devices
-
-    // add device manager device
-    grapeEditor.Devices.add({
-        id: 'manage_devices_btn',
-        name: 'Manage Devices',
-    });
-
-    // add all user-created devices.
-    // If no deveices are created, add Desktop, Tablet, Mobile Landskape and Mobile Portrait
-
+function removeUnwantedPanelStuff() {
+    // remove the devices switcher
+    grapeEditor.getConfig().showDevices = false;
     
-    // when manage devices is clicked
-    grapeEditor.on('device:select', (device, previousDevice) => {
-        if (device.attributes.id === 'manage_devices_btn') {
-            grapeEditor.Devices.select(previousDevice.attributes.id);
-            
-            // create New Device Form
-            let wrapper = document.createElement('div');
-            wrapper.innerHTML = `<input type="text" placeholder="Device Name">`
-            grapeEditor.Modal.open({
-                title: 'Manage Devices',
-                content: wrapper
-            });
-        }
-    });
+    // remove the view code button
+    let codeButton = grapeEditor.Panels.getButton("options", "export-template");
+    codeButton.collection.remove(codeButton);
+}
+
+function myOwnDeviceManager() {
+    const device = {
+        label: 'Tablet',
+        width: 550,
+        height: 750
+    }
+    function setCanvasSize() {
+        document.querySelector('.gjs-frame-wrapper').style.cssText = `
+            max-width: ${device.width}px;
+            max-height: ${device.height}px;
+            top: calc(50% - 30px);
+            transform: translateY(-50%);
+            `;
+    }
+    grapeEditor.on('canvas:resize', setCanvasSize);
+    grapeEditor.on('page:select', setCanvasSize);
+    setCanvasSize();
 }
