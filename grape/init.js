@@ -14,6 +14,9 @@ function GrapeOnReady(editor) {
 
     // add custom blocks to side panel
     addBasicDivBoxToBlockManager();
+
+    // setup copy and paste commands
+    setupCopyAndPasteCommands();
     
     // button add onclick
     grapeEditor.Commands.add('open-selected-comp-in-blockly', (e)=>{
@@ -238,4 +241,45 @@ function myOwnDeviceManager() {
     grapeEditor.on('canvas:resize', setCanvasSize);
     grapeEditor.on('page:select', setCanvasSize);
     setCanvasSize();
+}
+
+function setupCopyAndPasteCommands() {
+    function newCopy(selected) {
+        window.localStorage.setItem('grapesjs_clipboard', JSON.stringify(selected));
+    }
+    function newPaste(selected) {
+        var components = JSON.parse(window.localStorage.getItem('grapesjs_clipboard'));
+
+        if (components) {
+            if (selected && selected.attributes.type !== 'wrapper') {
+                var index = selected.index();
+                // Invert the order so last item gets added first and gets pushed down as others get added.
+                components.reverse();
+                var currentSelection = selected.collection;
+                components.forEach(comp => {
+                    // TODO: Add check for validity of paste.
+                    var added = currentSelection.add(comp, { at: index + 1 });
+                    grapeEditor.trigger('component:paste', added);
+                });
+                selected.emitUpdate();
+            } else {
+                // No components are selected so just insert at the end.
+                grapeEditor.addComponents(components);
+            }
+        }
+    }
+
+    const commands = grapeEditor.Commands;
+    commands.add('core:copy', editor => {
+        const selected = [...editor.getSelectedAll()];
+        //Filter out components that are not copyable.
+        var filteredSelected = selected.filter(item => item.attributes.copyable == true);
+        if (filteredSelected.length) {
+            newCopy(filteredSelected);
+        }
+    });
+    commands.add('core:paste', editor => {
+        const selected = editor.getSelected();
+        newPaste(selected);
+    });
 }
