@@ -9,9 +9,12 @@ function GrapeOnReady(editor) {
 
     // add devices
     addAddDevicesBtn();
+
+    // add custom blocks to side panel
+    addBasicDivBoxToBlockManager();
     
     // button add onclick
-    grapeEditor.Commands.add('add-button-onclick', (e)=>{
+    grapeEditor.Commands.add('open-selected-comp-in-blockly', (e)=>{
         // open code editor and add a block for the on-click
         openBlocklyBtn(openGrapeComponent = window.lastSelectedGrapeComponent.ccid);
     });
@@ -63,6 +66,10 @@ GrapesJsStudioSDK.createStudioEditor({
     },
     selectorManager: {
         componentFirst: 1,
+    },
+    devicePreviewMode: 0,
+    canvas: {
+        styles: [ 'http://127.0.0.1:5500/grape/custom-canvas-styles.css' ]
     },
     project: {
         default: {
@@ -126,7 +133,42 @@ GrapesJsStudioSDK.createStudioEditor({
     ]
 });
 
-
+function addBasicDivBoxToBlockManager() {
+    grapeEditor.BlockManager.add('Box', {
+        media: '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M2 20h20V4H2v16Zm-1 0V4a1 1 0 0 1 1-1h20a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1Z"/></svg>',
+        label: 'Box',
+        category: 'Basic',
+        content: {
+            type: 'Box',
+            content: ''
+        },
+    });
+    let addBasicBoxStylesToCanvasHeader = () => {
+        let s = document.createElement('style');
+        s.innerHTML = `[data-gjs-type="Box"]:empty:before {
+    background-color: #ddd;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 30px;
+    padding: 0 10px;
+    opacity: 0.3;
+    border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    content: "Empty Box";
+}`;
+        document.querySelector('iframe.gjs-frame').contentWindow.document.head.appendChild(s);
+    }
+    grapeEditor.on('canvas:frame:load:head', addBasicBoxStylesToCanvasHeader);
+    addBasicBoxStylesToCanvasHeader();
+}
 function addBlockyButtonToTopBar() {
     let n = document.createElement('div')
     n.classList.add('gs-cmp-tooltip', 'gs-utl-relative');
@@ -149,14 +191,14 @@ function onComponentSelected() {
     
     // check if this command already exists on this component toolbar
     const defaultToolbar = selectedComponent.get('toolbar');
-    const commandExists = defaultToolbar.some(item => item.command === 'add-button-onclick');
+    const commandExists = defaultToolbar.some(item => item.command === 'open-selected-comp-in-blockly');
     
     // if it doesn't already exist, add it
     if (!commandExists) {
         selectedComponent.set({
             toolbar: [ ...defaultToolbar, {
                 label: '<svg viewBox="0 0 24 24" role="presentation" class="gs-cmp-icon" style="width: 18px; height: 18px;"><path d="M12.89,3L14.85,3.4L11.11,21L9.15,20.6L12.89,3M19.59,12L16,8.41V5.58L22.42,12L16,18.41V15.58L19.59,12M1.58,12L8,5.58V8.41L4.41,12L8,15.58V18.41L1.58,12Z" style="fill: currentcolor;"></path></svg>',
-                command: 'add-button-onclick'
+                command: 'open-selected-comp-in-blockly'
             }]
         });
     }
