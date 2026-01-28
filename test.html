@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Exported Page</title>
+        <style>
+* { box-sizing: border-box; } body {margin: 0;}#ilm0h{color:black;width:122px;}.gjs-grid-column{flex:1 1 0%;padding:5px 0;}.gjs-grid-row{display:flex;justify-content:flex-start;align-items:stretch;flex-direction:row;min-height:auto;padding:10px 0;}#ivfnv{display:flex;justify-content:center;}#i5ayf{display:flex;flex-direction:column;gap:1em;}@media (max-width: 992px){.gjs-grid-row{flex-direction:column;}}
+        </style>
+    </head>
+    <body>
+<body id="i40k"><center id="i67k"></center><div id="ib4fk" class="gjs-grid-row"><div id="ivfnv" class="gjs-grid-column"><div id="i5ayf"><img id="ilm0h" src="https://beckersuite.com/assets/images/me.jpg"/><button type="button" id="i4xyx">Button</button></div></div></div></body>
+    <script>
+
+var x;
+
+// Describe this function...
+function ConvertText(x) {
+  return ['Well hello, ',x,'! It\'s nice to meet you!'].join('');
+}
+
+
+class PageLoad {
+	static getPageStartValue() {
+		let params = new URLSearchParams(window.location.search);
+		let startValue = params.get('startValue');
+		if (!startValue) {
+			return null;
+		} else {
+			return decodeURIComponent( startValue );
+		}
+	}
+}
+
+
+document.getElementById('i4xyx').addEventListener('click', () => {
+  window.alert(ConvertText(window.prompt('What\'s your name?')));
+});
+    </script>
+    </body>
+</html>

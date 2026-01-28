@@ -41,6 +41,7 @@ const saveNow = () => {
     document.getElementById('saveBtn').disabled = true;
     const state = Blockly.serialization.workspaces.save(workspace);
     localStorage.setItem('workspace-state', JSON.stringify(state));
+    localStorage.setItem('blockly-workspace-output', getBlocklyCode());
 }
 const autoSave = () => {
     document.getElementById('saveBtn').disabled = false;

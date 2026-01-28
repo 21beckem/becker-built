@@ -58,6 +58,75 @@ async function openBlocklyBtn(openGrapeComponent=null) {
         }
     });
 }
+function openPreviewWindow() {
+    // make sure all components have an id otherwise blockly will fail
+    ensureAllComponentsHaveAnID();
+
+    localStorage.setItem('currentPageId', currentPageId);
+    localStorage.setItem('pageComponents', JSON.stringify( grapeEditor.getComponents() ));
+    
+    // create modal window for exported code
+    let wrapper = document.createElement('div');
+    
+    wrapper.innerHTML = `<iframe id="exportedCodeIframe" src="${getFullCode({encodeURI:true})}" frameborder="0" style="width: 100%; height: calc(100vh - 200px); border-radius: .75rem; border: 1px solid #DDDDDD"></iframe>`
+    grapeEditor.Modal.open({
+        title: 'Exported Code',
+        content: wrapper,
+        attributes: {
+            class: 'my-wide-modal'
+        }
+    });
+}
+function openExportedCode() {
+    // make sure all components have an id otherwise blockly will fail
+    ensureAllComponentsHaveAnID();
+
+    localStorage.setItem('currentPageId', currentPageId);
+    localStorage.setItem('pageComponents', JSON.stringify( grapeEditor.getComponents() ));
+    
+    // create modal window for exported code
+    let wrapper = document.createElement('div');
+    
+    wrapper.innerHTML = `
+    <textarea style="width: 100%; height: calc(100vh - 200px); border-radius: .75rem; border: 1px solid #DDDDDD">${getFullCode()}</textarea>`;
+    grapeEditor.Modal.open({
+        title: 'Exported Code',
+        content: wrapper,
+        attributes: {
+            class: 'my-wide-modal'
+        }
+    });
+}
+function getFullCode(options={}) {
+    if (!options) options = {};
+    const html = grapeEditor.getHtml();
+    const css = grapeEditor.getCss();
+    const grapeJs = grapeEditor.getJs();
+    const blocklyJs = localStorage.getItem('blockly-workspace-output') || '';
+    const scriptTags = ['<scr'+'ipt>', '</scr'+'ipt>'];
+    const fullCode = `
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Exported Page</title>
+        <style>
+${css}
+        </style>
+    </head>
+    <body>
+${html}
+    ${scriptTags[0]}
+${grapeJs}
+${blocklyJs}
+    ${scriptTags[1]}
+    </body>
+</html>`.trim();
+    if (options.encodeURI===true)
+        return `data:text/html;charset=utf-8,${encodeURIComponent(fullCode)}`;
+    return fullCode;
+}
 function ensureAllComponentsHaveAnID() {
     function ensureComponentHasAnIDRecursively(comp) {
         if (!comp.attributes || !comp.attributes.attributes || !comp.attributes.attributes.id) {

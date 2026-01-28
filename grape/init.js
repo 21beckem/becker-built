@@ -3,6 +3,7 @@ var currentPageId;
 function GrapeOnReady(editor) {
     console.log('GrapesJS Studio Editor is ready!', editor);
     addBlockyButtonToTopBar();
+    addExportButtonToTopBar();
 
     grapeEditor = editor;
 
@@ -17,6 +18,18 @@ function GrapeOnReady(editor) {
 
     // setup copy and paste commands
     setupCopyAndPasteCommands();
+
+    // make custom preview method
+    grapeEditor.Commands.add('core:preview', {
+        run(editor, sender) {
+            openPreviewWindow();
+            throw new Error('Prevent Default Preview');
+        },
+        stop(editor, sender) {
+            // Logic to exit preview
+            console.log('Stopped preview');
+        }
+    });
     
     // button add onclick
     grapeEditor.Commands.add('open-selected-comp-in-blockly', (e)=>{
@@ -89,22 +102,20 @@ GrapesJsStudioSDK.createStudioEditor({
         storageType: 'self',
         // Provide a custom upload handler for assets
         onUpload: async ({ files }) => {
-            console.log('files', files);
-            const body = new FormData();
-            for (const file of files) {
-                body.append('files', file);
-            }
-            const response = await fetch('ASSETS_UPLOAD_URL', { method: 'POST', body });
-            const result = await response.json();
-            // The expected result should be an array of assets, eg.
-            // [{ src: 'ASSET_URL' }]
-            return result;
+            // convert files to data urls
+            const assets = await Promise.all(Array.from(files).map(file => {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve({ src: reader.result, name: file.name });
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }));
+            return assets;
         },
         // Provide a custom handler for deleting assets
         onDelete: async ({ assets }) => {
-            console.log('assets', assets);
-            const body = JSON.stringify(assets);
-            await fetch('ASSETS_DELETE_URL', { method: 'DELETE', body });
+            // since we are using data urls, there's nothing to delete
         }
     },
     storage: {
@@ -186,6 +197,12 @@ function addBlockyButtonToTopBar() {
     n.innerHTML = `<span class="gs-cmp-tooltip-target gs-utl-block gs-utl-cursor-auto"><div class=""><button class="gs-utl-transition-colors gs-utl-cursor-pointer gs-utl-block gs-utl-p-1 gs-utl-text-sm gs-cmp-button gs-utl-rounded gs-theme-ring-focus focus:gs-utl-outline-none focus-visible:gs-utl-ring-2 gs-utl-ring-violet-300 gs-utl-ring-opacity-80 gs-theme-cl-bgA2" type="button" style="padding: 5px 10px; margin: 5px;" onclick="openBlocklyBtn()">Code Blocks</button></div></span>`;
     document.querySelector('.gs-cmp-editor-topbar__wrp-right.gs-utl-flex-1').firstChild.appendChild(n);
 }
+function addExportButtonToTopBar() {
+    let n = document.createElement('div')
+    n.classList.add('gs-cmp-tooltip', 'gs-utl-relative');
+    n.innerHTML = `<span class="gs-cmp-tooltip-target gs-utl-block gs-utl-cursor-auto"><div class=""><button class="gs-utl-transition-colors gs-utl-cursor-pointer gs-utl-block gs-utl-p-1 gs-utl-text-sm gs-cmp-button gs-utl-rounded gs-theme-ring-focus focus:gs-utl-outline-none focus-visible:gs-utl-ring-2 gs-utl-ring-violet-300 gs-utl-ring-opacity-80 gs-theme-cl-bgA2" type="button" style="padding: 5px 10px; margin: 5px;" onclick="openExportedCode()">Export</button></div></span>`;
+    document.querySelector('.gs-cmp-editor-topbar__wrp-right.gs-utl-flex-1').firstChild.appendChild(n);
+}
 
 // add a button open code editor in the toolbar of selected elements
 function onComponentSelected() {
@@ -221,7 +238,7 @@ function removeUnwantedPanelStuff() {
     
     // remove the view code button
     let codeButton = grapeEditor.Panels.getButton("options", "export-template");
-    codeButton.collection.remove(codeButton);
+    codeButton?.collection.remove(codeButton);
 }
 
 function myOwnDeviceManager() {
